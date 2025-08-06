@@ -1,69 +1,47 @@
-# React + TypeScript + Vite
+# 🌐 Weather Polygon Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a React + TypeScript dashboard application that integrates MapLibre for drawing polygons on a map and visualizing weather data over time. Users can select time ranges via a timeline slider, configure polygons with thresholds, and switch between different views including map, dashboard analytics, and settings.
 
-Currently, two official plugins are available:
+## 🚀 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🗺️ Interactive Map using MapLibre
+- 📏 Draw & manage polygons with thresholds
+- ⏰ Timeline slider supporting single & range modes
+- 📊 Analytics dashboard with polygon stats
+- ⚙️ Configurable data sources, thresholds, and map behavior
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend Framework**: React + TypeScript + Vite
+- **Map Library**: [MapLibre GL JS](https://maplibre.org/)
+- **Drawing Tool**: `@mapbox/mapbox-gl-draw`
+- **UI Styling**: Tailwind CSS
+- **Slider**: `rc-slider`
+- **Date Handling**: Native `Date` + `toLocaleString`
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 📦 Installation & Running the App
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/your-username/weather-polygon-dashboard.git
+cd weather-polygon-dashboard
 ```
+Install dependencies:
+once cloned:
+-- npm install
+-- npm install react react-dom typescript vite
+-- npm install maplibre-gl @mapbox/mapbox-gl-draw
+-- npm install rc-slider
+-- npm install tailwindcss postcss autoprefixer
+--npm install @tailwindcss/vite
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Output :
+You will see the output as:
+Interactive Map, Timeline Slider and Sider Components
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+
+
