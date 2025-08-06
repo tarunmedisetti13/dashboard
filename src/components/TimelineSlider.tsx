@@ -24,7 +24,7 @@ interface TimelineSliderProps {
     isLoading?: boolean;
 }
 
-const TimelineSlider: React.FC<TimelineSliderProps> = ({ onTimeChange, isLoading = false }) => {
+const TimelineSlider: React.FC<TimelineSliderProps> = ({ onTimeChange }) => {
     // Generate 30 days of hourly data (15 days before/after today)
     const generateTimelineData = (): TimelineDataPoint[] => {
         const data: TimelineDataPoint[] = [];

@@ -1,11 +1,10 @@
-import { useRef, useEffect, useState } from 'react'; // ✅ Correct Hook imports
+import { useRef, useEffect } from 'react'; // ✅ Correct Hook imports
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import type { PolygonConfig } from '../types/types';
 import maplibregl from 'maplibre-gl';
 // Import required CSS for map and draw tools
 import 'maplibre-gl/dist/maplibre-gl.css';
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
-import type { ThresholdRule } from '../types/types'; // adjust path if needed
 
 type MapViewProps = {
     configByPolygon: { [id: string]: PolygonConfig };
@@ -13,78 +12,52 @@ type MapViewProps = {
     // other props if needed
 };
 
-//getting temperature coordinates
-const getTemperatureForCoordinate = async (lat: number, lon: number): Promise<number | null> => {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m&timezone=auto`;
 
-    try {
-        const res = await fetch(url);
-        const data = await res.json();
-        const temps = data?.hourly?.temperature_2m;
 
-        if (Array.isArray(temps) && temps.length > 0) {
-            // Use the latest available hour's temperature
-            return temps[0]; // or temps.at(-1)
-        }
-    } catch (err) {
-        console.error(`Failed to fetch temp for (${lat}, ${lon})`, err);
-    }
-
-    return null;
-};
-
-// MapView.tsx (inside the component or outside if you prefer)
-function getPolygonColor(weatherData: number[] | undefined, thresholds: ThresholdRule[]): string {
-    if (!weatherData || weatherData.length === 0) return '#cccccc'; // default gray
-
-    const avg = weatherData.reduce((a, b) => a + b, 0) / weatherData.length;
-
-    for (const rule of thresholds) {
-        switch (rule.operator) {
-            case '>':
-                if (avg > rule.value) return rule.color;
-                break;
-            case '<':
-                if (avg < rule.value) return rule.color;
-                break;
-            case '>=':
-                if (avg >= rule.value) return rule.color;
-                break;
-            case '<=':
-                if (avg <= rule.value) return rule.color;
-                break;
-            case '=':
-                if (avg === rule.value) return rule.color;
-                break;
-        }
-    }
-
-    return '#cccccc'; // fallback color
-}
-
-//calculating centroid of apolygon
-function calculateCentroid(coords: [number, number][]): [number, number] {
-    let x = 0, y = 0;
-    coords.slice(0, -1).forEach(([lng, lat]) => {
-        x += lng;
-        y += lat;
-    });
-    const count = coords.length - 1; // exclude closing point
-    return [x / count, y / count];
-}
-
-const MapView: React.FC<MapViewProps> = ({ configByPolygon, onConfigChange }) => {
+const MapView: React.FC<MapViewProps> = ({ configByPolygon }) => {
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapRef = useRef<maplibregl.Map | null>(null);
     const drawRef = useRef<MapboxDraw | null>(null);
 
-    const [polygonAvgTemp, setPolygonAvgTemp] = useState<number | null>(null);
-    const [polygonCentroid, setPolygonCentroid] = useState<[number, number] | null>(null);
+    // const [polygonAvgTemp, setPolygonAvgTemp] = useState<number | null>(null);
+    // const [polygonCentroid, setPolygonCentroid] = useState<[number, number] | null>(null);
     const polygonTempMarkersRef = useRef<{ [id: string]: maplibregl.Marker }>({});
     const defaultCenter: [number, number] = [78.9629, 20.5937]; // Longitude, Latitude (India)
-    const [polygonData, setPolygonData] = useState<{
-        [id: string]: { avgTemp: number; centroid: [number, number] };
-    }>({});
+    // const [polygonData, setPolygonData] = useState<{
+    //     [id: string]: { avgTemp: number; centroid: [number, number] };
+    // }>({});
+
+
+    //getting temperature coordinates
+    const getTemperatureForCoordinate = async (lat: number, lon: number): Promise<number | null> => {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m&timezone=auto`;
+
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            const temps = data?.hourly?.temperature_2m;
+
+            if (Array.isArray(temps) && temps.length > 0) {
+                // Use the latest available hour's temperature
+                return temps[0]; // or temps.at(-1)
+            }
+        } catch (err) {
+            console.error(`Failed to fetch temp for (${lat}, ${lon})`, err);
+        }
+
+        return null;
+    };
+
+    //calculating centroid of apolygon
+    function calculateCentroid(coords: [number, number][]): [number, number] {
+        let x = 0, y = 0;
+        coords.slice(0, -1).forEach(([lng, lat]) => {
+            x += lng;
+            y += lat;
+        });
+        const count = coords.length - 1; // exclude closing point
+        return [x / count, y / count];
+    }
 
     // ✅ Function to get color based on temperature
     const getTemperatureColor = (avgTemp: number): string => {
@@ -165,10 +138,10 @@ const MapView: React.FC<MapViewProps> = ({ configByPolygon, onConfigChange }) =>
                 temperatures.reduce((sum, t) => sum + t, 0) / temperatures.length;
 
             console.log(`🌡️ Average temperature for polygon: ${avgTemp.toFixed(2)}°C`);
-            setPolygonAvgTemp(avgTemp);
+            // setPolygonAvgTemp(avgTemp);
 
             const centroid = calculateCentroid(coordinates);
-            setPolygonCentroid(centroid);
+            // setPolygonCentroid(centroid);
 
             // ✅ Get color based on temperature and render polygon
             const polygonColor = getTemperatureColor(avgTemp);
@@ -198,14 +171,14 @@ const MapView: React.FC<MapViewProps> = ({ configByPolygon, onConfigChange }) =>
             }
 
             // ✅ Store polygon data for future reference
-            setPolygonData(prev => ({
-                ...prev,
-                [polygonId]: { avgTemp, centroid }
-            }));
+            // setPolygonData(prev => ({
+            //     ...prev,
+            //     [polygonId]: { avgTemp, centroid }
+            // }));
 
         } else {
-            setPolygonAvgTemp(null);
-            setPolygonCentroid(null);
+            // setPolygonAvgTemp(null);
+            // setPolygonCentroid(null);
             console.warn('No temperatures retrieved for polygon');
         }
     };
@@ -215,20 +188,20 @@ const MapView: React.FC<MapViewProps> = ({ configByPolygon, onConfigChange }) =>
     }, [configByPolygon]);
 
     // Utility to calculate centroid of polygon
-    function getPolygonCentroid(coords: [number, number][]): { lat: number, lon: number } {
-        let x = 0, y = 0;
-        const len = coords.length;
+    // function getPolygonCentroid(coords: [number, number][]): { lat: number, lon: number } {
+    //     let x = 0, y = 0;
+    //     const len = coords.length;
 
-        for (let i = 0; i < len; i++) {
-            x += coords[i][0];
-            y += coords[i][1];
-        }
+    //     for (let i = 0; i < len; i++) {
+    //         x += coords[i][0];
+    //         y += coords[i][1];
+    //     }
 
-        return {
-            lon: x / len,
-            lat: y / len,
-        };
-    }
+    //     return {
+    //         lon: x / len,
+    //         lat: y / len,
+    //     };
+    // }
 
     useEffect(() => {
         if (!mapContainer.current) return;
@@ -388,11 +361,11 @@ const MapView: React.FC<MapViewProps> = ({ configByPolygon, onConfigChange }) =>
                     }
 
                     // Remove from polygon data
-                    setPolygonData(prev => {
-                        const newData = { ...prev };
-                        delete newData[id];
-                        return newData;
-                    });
+                    // setPolygonData(prev => {
+                    //     const newData = { ...prev };
+                    //     delete newData[id];
+                    //     return newData;
+                    // });
                 }
             });
         });

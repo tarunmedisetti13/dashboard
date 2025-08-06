@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { Plus, Trash2, Settings, Eye, EyeOff, ChevronDown, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { Plus, Trash2, Eye, EyeOff, ChevronDown, ChevronRight } from 'lucide-react';
 
 // Types for data sources and thresholds
 interface ThresholdRule {
@@ -301,7 +301,7 @@ const DataSourceSidebar: React.FC = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        {source.thresholds.map((threshold, index) => (
+                                        {source.thresholds.map((threshold) => (
                                             <div key={threshold.id} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
                                                 <select
                                                     value={threshold.operator}
@@ -385,7 +385,7 @@ const DataSourceSidebar: React.FC = () => {
                                 <div className="pt-2 border-t border-gray-200">
                                     <div className="text-xs font-medium text-gray-700 mb-1">Preview</div>
                                     <div className="space-y-1">
-                                        {source.thresholds.map((threshold, index) => (
+                                        {source.thresholds.map((threshold) => (
                                             <div key={threshold.id} className="flex items-center gap-2 text-xs">
                                                 <div
                                                     className="w-3 h-3 rounded"
